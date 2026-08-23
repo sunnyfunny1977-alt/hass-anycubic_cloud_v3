@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.0.1
+
+### Changed
+
+- `ACE Active Filament` is now created as soon as the printer has an ACE box, instead of waiting for the first filament change. The latch has no value until the box feeds a slot for the first time, so the sensor previously did not exist at all on a fresh install and could not be put on a dashboard. It now exists immediately and reads unavailable until the first change, matching how the other deferred sensors behave.
+
 ## 1.0.0
 
 This repository now maintains its own version line. Upstream

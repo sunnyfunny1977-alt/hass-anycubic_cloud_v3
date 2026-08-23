@@ -14,7 +14,7 @@ Die Integration wird ueber HACS als benutzerdefiniertes Repository installiert.
 
 > **Eigenstaendige Fork-Linie.** Dieses Repository hat ab **1.0.0** eine eigene Versionszaehlung und ist bewusst von der Nummerierung des Ursprungs-Forks entkoppelt, damit sich Releases und Tags nicht gegenseitig ueberschreiben. Der Funktionsstand entspricht 0.3.8 dieses Repositorys zuzueglich der ACE-Erweiterungen. Releases aus [ljschmitt/hass-anycubic_cloud_v3](https://github.com/ljschmitt/hass-anycubic_cloud_v3) mit gleicher Nummer sind **nicht** identisch.
 
-> 🗓️ **Aktuelles Release: 1.0.0**
+> 🗓️ **Aktuelles Release: 1.0.1**
 >
 > - Erste Version der eigenen Versionslinie. Inhaltlich der bisherige Stand 0.3.8 dieses Repositorys, nur mit eigener Nummerierung, damit Tags und Releases nicht mit dem Ursprungs-Fork kollidieren.
 > - Neu: Sensor `ACE Active Filament` (bei zweiter Box zusaetzlich `Secondary ACE Active Filament`) zeigt das Filament, das gerade in der Duese steckt, z. B. `PLA #0047BB`. Materialtyp, SKU, Farbe, Slotnummer und Box-ID stehen als Attribute daneben.
