@@ -2,15 +2,17 @@
 
 [Deutsch](README.md) | [English](README.en.md)
 
-[![Latest release](https://img.shields.io/github/v/release/ljschmitt/hass-anycubic_cloud_v3?label=release)](https://github.com/ljschmitt/hass-anycubic_cloud_v3/releases/latest)
-[![GitHub stars](https://img.shields.io/github/stars/ljschmitt/hass-anycubic_cloud_v3)](https://github.com/ljschmitt/hass-anycubic_cloud_v3/stargazers)
-[![License: GPL-3.0](https://img.shields.io/github/license/ljschmitt/hass-anycubic_cloud_v3)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/sunnyfunny1977-alt/hass-anycubic_cloud_v3?label=release)](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/releases/latest)
+[![GitHub stars](https://img.shields.io/github/stars/sunnyfunny1977-alt/hass-anycubic_cloud_v3)](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/stargazers)
+[![License: GPL-3.0](https://img.shields.io/github/license/sunnyfunny1977-alt/hass-anycubic_cloud_v3)](LICENSE)
 
-[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ljschmitt&repository=hass-anycubic_cloud_v3&category=integration)
+[![Open in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=sunnyfunny1977-alt&repository=hass-anycubic_cloud_v3&category=integration)
 
 A Home Assistant integration for Anycubic cloud printers with status sensors, MQTT real-time updates, print and file actions, ACE/material management, and an optional camera view.
 
-The integration is currently available through HACS as a custom repository. Its [submission to the default HACS catalog](https://github.com/hacs/default/pull/8869) is under review.
+The integration is installed through HACS as a custom repository.
+
+> **Independent fork line.** From **1.0.0** this repository uses its own version numbering, deliberately decoupled from the upstream fork so releases and tags cannot collide. Same-numbered releases in [ljschmitt/hass-anycubic_cloud_v3](https://github.com/ljschmitt/hass-anycubic_cloud_v3) are **not** the same code.
 
 ## Highlights
 
@@ -51,7 +53,7 @@ Feedback about additional models is welcome. Never include tokens, private IP ad
 Until the default HACS catalog submission is merged:
 
 1. Open **HACS -> Integrations -> menu -> Custom repositories**.
-2. Add `https://github.com/ljschmitt/hass-anycubic_cloud_v3` as an **Integration**.
+2. Add `https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3` as an **Integration**.
 3. Search for **Anycubic HA Integration** and install it.
 4. Restart Home Assistant.
 5. Open **Settings -> Devices & services -> Add integration**.
@@ -78,8 +80,8 @@ Do not publish Anycubic tokens, Home Assistant credentials, printer IDs, serial 
 
 ## Support and feedback
 
-- [Open an issue](https://github.com/ljschmitt/hass-anycubic_cloud_v3/issues)
-- [Latest release](https://github.com/ljschmitt/hass-anycubic_cloud_v3/releases/latest)
+- [Open an issue](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/issues)
+- [Latest release](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/releases/latest)
 - [German documentation](README.md)
 
 ## License

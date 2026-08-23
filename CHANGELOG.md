@@ -1,5 +1,20 @@
 # Changelog
 
+## 1.0.0
+
+This repository now maintains its own version line. Upstream
+`ljschmitt/hass-anycubic_cloud_v3` had independently published a different
+0.3.8, so continuing the shared numbering would have produced two releases
+with the same tag and different code. Starting at 1.0.0 keeps the two apart;
+it is a numbering change, not a rewrite. Functionally this is the previous
+0.3.8 of this repository.
+
+### Changed
+
+- Repository links, HACS install instructions, issue tracker and manifest
+  metadata now point at this fork. Credit for the upstream fork and the
+  original integration is unchanged.
+
 ## 0.3.8
 
 ### Added

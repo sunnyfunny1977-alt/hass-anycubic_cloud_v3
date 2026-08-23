@@ -2,7 +2,7 @@
   "domain": "anycubic_ha_integration",
   "name": "Anycubic HA Integration",
   "codeowners": [
-    "@ljschmitt"
+    "@sunnyfunny1977-alt"
   ],
   "config_flow": true,
   "dependencies": [
@@ -11,12 +11,12 @@
     "image",
     "panel_custom"
   ],
-  "documentation": "https://github.com/ljschmitt/hass-anycubic_cloud_v3",
+  "documentation": "https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/ljschmitt/hass-anycubic_cloud_v3/issues",
+  "issue_tracker": "https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/issues",
   "loggers": [],
   "requirements": [
     "paho-mqtt>=2.0.0,<3"
   ],
-  "version": "0.3.8"
+  "version": "1.0.0"
 }

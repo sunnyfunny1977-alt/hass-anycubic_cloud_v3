@@ -2,18 +2,21 @@
 
 [Deutsch](README.md) | [English](README.en.md)
 
-[![Latest release](https://img.shields.io/github/v/release/ljschmitt/hass-anycubic_cloud_v3?label=release)](https://github.com/ljschmitt/hass-anycubic_cloud_v3/releases/latest)
-[![GitHub stars](https://img.shields.io/github/stars/ljschmitt/hass-anycubic_cloud_v3)](https://github.com/ljschmitt/hass-anycubic_cloud_v3/stargazers)
-[![License: GPL-3.0](https://img.shields.io/github/license/ljschmitt/hass-anycubic_cloud_v3)](LICENSE)
+[![Latest release](https://img.shields.io/github/v/release/sunnyfunny1977-alt/hass-anycubic_cloud_v3?label=release)](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/releases/latest)
+[![GitHub stars](https://img.shields.io/github/stars/sunnyfunny1977-alt/hass-anycubic_cloud_v3)](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/stargazers)
+[![License: GPL-3.0](https://img.shields.io/github/license/sunnyfunny1977-alt/hass-anycubic_cloud_v3)](LICENSE)
 
-[![In HACS oeffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=ljschmitt&repository=hass-anycubic_cloud_v3&category=integration)
+[![In HACS oeffnen](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=sunnyfunny1977-alt&repository=hass-anycubic_cloud_v3&category=integration)
 
 Home-Assistant-Integration fuer Anycubic-Cloud-Drucker mit Statussensoren, MQTT-Echtzeitupdates, Druck- und Dateifunktionen, ACE-/Materialverwaltung und optionaler Kameraansicht.
 
-Die Integration ist derzeit ueber HACS als benutzerdefiniertes Repository installierbar. Die [Aufnahme in den standardmaessigen HACS-Katalog](https://github.com/hacs/default/pull/8869) befindet sich in der Pruefung.
+Die Integration wird ueber HACS als benutzerdefiniertes Repository installiert.
 
-> 🗓️ **Aktuelles Release: 0.3.8**
+> **Eigenstaendige Fork-Linie.** Dieses Repository hat ab **1.0.0** eine eigene Versionszaehlung und ist bewusst von der Nummerierung des Ursprungs-Forks entkoppelt, damit sich Releases und Tags nicht gegenseitig ueberschreiben. Der Funktionsstand entspricht 0.3.8 dieses Repositorys zuzueglich der ACE-Erweiterungen. Releases aus [ljschmitt/hass-anycubic_cloud_v3](https://github.com/ljschmitt/hass-anycubic_cloud_v3) mit gleicher Nummer sind **nicht** identisch.
+
+> 🗓️ **Aktuelles Release: 1.0.0**
 >
+> - Erste Version der eigenen Versionslinie. Inhaltlich der bisherige Stand 0.3.8 dieses Repositorys, nur mit eigener Nummerierung, damit Tags und Releases nicht mit dem Ursprungs-Fork kollidieren.
 > - Neu: Sensor `ACE Active Filament` (bei zweiter Box zusaetzlich `Secondary ACE Active Filament`) zeigt das Filament, das gerade in der Duese steckt, z. B. `PLA #0047BB`. Materialtyp, SKU, Farbe, Slotnummer und Box-ID stehen als Attribute daneben.
 > - Behoben: Das aktive Filament verschwand bisher wenige Sekunden nach dem Farbwechsel wieder. Der Drucker meldet `loaded_slot` nur waehrend des Wechsels und danach `-1`, und jeder Cloud-Poll hat die Box aus genau diesem Wert neu aufgebaut. Der zuletzt tatsaechlich gefoerderte Slot wird jetzt gehalten, ueberlebt den Poll und wird gespeichert, also auch einen Neustart von Home Assistant.
 > - Das rohe `loaded_slot`-Attribut am `ace_spools`-Sensor bleibt unveraendert und zeigt weiterhin den Momentanwert.
@@ -224,7 +227,7 @@ Fuer einfache Setups mit nur einer Kamera kann weiterhin die bestehende Option `
 
 1. **HACS → Integrationen → ⋯ → Custom Repositories**
 2. Repository:  
-   https://github.com/ljschmitt/hass-anycubic_cloud_v3  
+   https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3  
    Kategorie: **Integration**
 3. **Daten neu laden**
 4. Integration in HACS suchen:  
@@ -304,7 +307,7 @@ Fehler, Verbesserungsvorschlaege und Erfahrungen mit weiteren Druckermodellen ko
 
 ## 📥 Releases
 
-➡️ [Letztes Release ansehen](https://github.com/ljschmitt/hass-anycubic_cloud_v3/releases/latest)
+➡️ [Letztes Release ansehen](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/releases/latest)
 
 ### Beta-/Test-Releases
 
@@ -350,7 +353,8 @@ Der Release-Check erwartet stabile Versionen auf `master` bzw. `main` und Pre-re
 
 ## 🙌 Mitwirkende
 
-- [@ljschmitt](https://github.com/ljschmitt)
+- [@sunnyfunny1977-alt](https://github.com/sunnyfunny1977-alt) (dieser Fork)
+- [@ljschmitt](https://github.com/ljschmitt) (Fork, auf dem dieser aufbaut)
 - [@WaresWichall](https://github.com/WaresWichall) (Original-Entwicklung)
 
 ---
@@ -363,7 +367,7 @@ GNU General Public License v3.0. Siehe [LICENSE](LICENSE).
 
 ## 💬 Feedback / Probleme
 
-➡️ [Issue öffnen](https://github.com/ljschmitt/hass-anycubic_cloud_v3/issues)
+➡️ [Issue öffnen](https://github.com/sunnyfunny1977-alt/hass-anycubic_cloud_v3/issues)
 
 ---
 
