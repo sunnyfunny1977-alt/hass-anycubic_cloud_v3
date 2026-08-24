@@ -275,11 +275,13 @@ Fehler, Verbesserungsvorschlaege und Erfahrungen mit weiteren Druckermodellen ko
 ## 🔐 Token auslesen (Slicer Next)
 
 1. **Slicer Next starten und eingeloggt lassen**
-2. PowerShell-Befehl fuer Slicer Next 1.4.1.2+ (kopiert den neuesten Access-Token aus dem aktuellen Log in die Zwischenablage):
+2. PowerShell-Skript fuer Slicer Next 1.4.1.2+ (durchsucht alle Logdateien, waehlt den zeitlich neuesten Access-Token und kopiert ihn in die Zwischenablage):
    ```powershell
-   $log = Get-ChildItem "$env:AppData\AnycubicSlicerNext\log" -Filter "debug_*.log" | Sort-Object LastWriteTime -Descending | Select-Object -First 1
-   $token = Select-String -Path $log.FullName -Pattern 'accessToken = ([^,\s]+)' | Select-Object -Last 1
-   $token.Matches.Groups[1].Value | Set-Clipboard
+   $logDir = Join-Path $env:AppData 'AnycubicSlicerNext\log'
+   $hit = Get-ChildItem $logDir -Filter 'debug_*.log' | Select-String -Pattern 'accessToken\s*=\s*([^,\s]+)' | ForEach-Object { $ts = [datetime]::MinValue; if ($_.Line -match '(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})') { $ts = [datetime]::ParseExact($Matches[1],'yyyy-MM-dd HH:mm:ss',$null) }; [pscustomobject]@{ Time=$ts; Token=$_.Matches[0].Groups[1].Value; File=$_.Filename } } | Sort-Object Time | Select-Object -Last 1
+   if (-not $hit) { throw 'Kein accessToken gefunden - im Slicer einmal ab- und wieder anmelden.' }
+   $hit.Token | Set-Clipboard
+   "OK - $($hit.File) ($($hit.Time)), $($hit.Token.Length) Zeichen kopiert."
    ```
 3. Alternative fuer aeltere Slicer-Versionen mit Klartext-Token in der `.conf`:
    ```powershell

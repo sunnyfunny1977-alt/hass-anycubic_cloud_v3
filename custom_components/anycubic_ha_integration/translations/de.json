@@ -21,7 +21,7 @@
       },
       "auth_mode_slicer": {
         "title": "Authentifizierungsmodus – Slicer Next",
-        "description": "Slicer Next 1.4.1.2+: Slicer eingeloggt offen lassen und diesen PowerShell-Befehl ausfuehren, um den aktuellen Token zu kopieren: $log = Get-ChildItem \"$env:AppData\\AnycubicSlicerNext\\log\" -Filter \"debug_*.log\" | Sort-Object LastWriteTime -Descending | Select-Object -First 1; $token = Select-String -Path $log.FullName -Pattern 'accessToken = ([^,\\s]+)' | Select-Object -Last 1; $token.Matches.Groups[1].Value | Set-Clipboard. Aeltere Versionen speichern access_token ggf. noch in AnycubicSlicerNext.conf. Details siehe README.",
+        "description": "Slicer Next 1.4.1.2+: Slicer eingeloggt offen lassen und das PowerShell-Skript aus dem README-Abschnitt „Token auslesen (Slicer Next)“ ausfuehren, es kopiert den aktuellen Token in die Zwischenablage. Aeltere Versionen speichern access_token ggf. noch in AnycubicSlicerNext.conf.",
         "data": {
           "user_token": "Slicer‑Zugriffstoken"
         }
