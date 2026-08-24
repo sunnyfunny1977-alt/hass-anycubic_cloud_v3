@@ -1,0 +1,891 @@
+# Muster-Dashboard fuer die Anycubic HA Integration
+#
+# Getestet mit einer Anycubic Kobra S1 Combo (eine ACE Pro, vier Slots).
+#
+# WICHTIG - Kamera:
+#   Die Kameraflaeche zeigt NICHT den Anycubic-Cloudstream. Der laeuft ueber
+#   Agora-RTC und laesst sich nicht als Home-Assistant-camera-Entity abbilden;
+#   er ist nur im mitgelieferten Anycubic-Panel verfuegbar.
+#   Hier wird eine EXTERNE Kamera eingebunden, im Originalaufbau eine
+#   SONOFF CAM-S1. Jede Kamera mit einer camera.*-Entity funktioniert.
+#   Platzhalter unten: camera.drucker_kamera
+#
+# Voraussetzungen:
+#   - HACS-Card "button-card" (custom:button-card)
+#   - Eine camera.*-Entity fuer die Kameraflaeche
+#   - Optional: drei Template-Helfer fuer die Kameraeinblendung
+#       sensor.kobra_overlay_uhrzeit, sensor.kobra_overlay_datum,
+#       sensor.kobra_overlay_druckinfo
+#   - Optional: zwei input_number-Helfer fuer die Temperatur-Feinjustierung
+#       input_number.kobra_duse_temperatur_offset,
+#       input_number.kobra_bett_temperatur_offset
+#
+# Entity-IDs anpassen:
+#   Die IDs enthalten den Druckernamen, hier "anycubic_kobra_s1". Heisst dein
+#   Drucker anders, passe sie vor dem Einfuegen an - am schnellsten per
+#   Suchen-und-Ersetzen von "anycubic_kobra_s1" auf deinen Namen.
+#
+# Einfuegen:
+#   Dashboard -> Stift -> Drei-Punkte-Menue -> "Raw-Konfigurationseditor"
+#   und diesen Block unter "views:" einhaengen.
+
+title: Anycubic Kobra S1
+path: anycubic-kobra-s1
+icon: mdi:printer-3d-nozzle
+type: sections
+max_columns: 4
+sections:
+- type: grid
+  cards:
+  - type: custom:button-card
+    name: kamera
+    icon: mdi:cctv
+    show_state: false
+    styles:
+      card:
+      - background: '#050510'
+      - border-radius: 12px
+      - padding: 10px 16px
+      - border-bottom: 2px solid "#00d4ff"
+      - box-shadow: '0 0 12px #00d4ff44'
+      name:
+      - font-family: monospace
+      - font-size: 13px
+      - letter-spacing: 2px
+      - color: '#00d4ff'
+      - text-transform: lowercase
+      icon:
+      - color: '#00d4ff'
+      - width: 18px
+    tap_action:
+      action: none
+  - type: vertical-stack
+    cards:
+    - type: conditional
+      conditions:
+      - condition: state
+        entity: light.anycubic_kobra_s1_camera_light
+        state: 'on'
+      card:
+        type: picture-elements
+        camera_image: camera.drucker_kamera
+        camera_view: live
+        elements:
+        - type: state-label
+          entity: sensor.kobra_overlay_datum
+          style:
+            top: 3%
+            left: 3%
+            transform: none
+            font-size: 11px
+            color: white
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.kobra_overlay_uhrzeit
+          style:
+            top: 3%
+            right: 3%
+            left: auto
+            transform: none
+            font-size: 12px
+            font-weight: bold
+            color: white
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.kobra_overlay_druckinfo
+          style:
+            top: 1%
+            left: 50%
+            transform: translate(-50%, 0)
+            font-size: 11px
+            font-weight: bold
+            color: white
+            background: rgba(0,0,0,0.55)
+            padding: 3px 10px
+            border-radius: 6px
+            border: 1px solid rgba(255,255,255,0.25)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.anycubic_kobra_s1_nozzle_temperature
+          prefix: 'Düse '
+          style:
+            bottom: 12%
+            top: auto
+            right: 3%
+            left: auto
+            transform: none
+            font-size: 11px
+            color: '#e67e22'
+            font-weight: bold
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.anycubic_kobra_s1_hotbed_temperature
+          prefix: 'Bett '
+          style:
+            bottom: 4%
+            top: auto
+            right: 3%
+            left: auto
+            transform: none
+            font-size: 11px
+            color: '#e67e22'
+            font-weight: bold
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+    - type: conditional
+      conditions:
+      - condition: state
+        entity: light.anycubic_kobra_s1_camera_light
+        state_not: 'on'
+      card:
+        type: picture-elements
+        image: /local/anycubic.png
+        elements:
+        - type: state-label
+          entity: sensor.kobra_overlay_datum
+          style:
+            top: 3%
+            left: 3%
+            transform: none
+            font-size: 11px
+            color: white
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.kobra_overlay_uhrzeit
+          style:
+            top: 3%
+            right: 3%
+            left: auto
+            transform: none
+            font-size: 12px
+            font-weight: bold
+            color: white
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.kobra_overlay_druckinfo
+          style:
+            top: 1%
+            left: 50%
+            transform: translate(-50%, 0)
+            font-size: 11px
+            font-weight: bold
+            color: white
+            background: rgba(0,0,0,0.55)
+            padding: 3px 10px
+            border-radius: 6px
+            border: 1px solid rgba(255,255,255,0.25)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.anycubic_kobra_s1_nozzle_temperature
+          prefix: 'Düse '
+          style:
+            bottom: 12%
+            top: auto
+            right: 3%
+            left: auto
+            transform: none
+            font-size: 11px
+            color: '#e67e22'
+            font-weight: bold
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+        - type: state-label
+          entity: sensor.anycubic_kobra_s1_hotbed_temperature
+          prefix: 'Bett '
+          style:
+            bottom: 4%
+            top: auto
+            right: 3%
+            left: auto
+            transform: none
+            font-size: 11px
+            color: '#e67e22'
+            font-weight: bold
+            text-shadow: 0 1px 2px rgba(0,0,0,0.9)
+            white-space: nowrap
+  - type: custom:button-card
+    entity: light.anycubic_kobra_s1_camera_light
+    name: Kamera-Licht
+    icon: mdi:lightbulb-on
+    show_state: true
+    tap_action:
+      action: toggle
+    styles:
+      card:
+      - background: '[[[ return entity.state === ''on'' ? ''#2d2500'' : ''#2c2c2e'' ]]]'
+      - border-radius: 12px
+      - padding: 14px
+      - border: '[[[ return entity.state === ''on'' ? ''1px solid #f1c40f'' : ''1px solid #444'' ]]]'
+      name:
+      - color: '#888'
+      - font-size: 11px
+      - text-transform: uppercase
+      - letter-spacing: 1px
+      state:
+      - font-size: 18px
+      - color: '[[[ return entity.state === ''on'' ? ''#f1c40f'' : ''#aaa'' ]]]'
+      - font-weight: 700
+      - text-transform: uppercase
+      icon:
+      - color: '[[[ return entity.state === ''on'' ? ''#f1c40f'' : ''#555'' ]]]'
+      - width: 24px
+      label:
+      - color: '#aaa'
+      - font-size: 11px
+      - font-style: italic
+      - margin-top: 2px
+    show_label: true
+    label: Auto-Aus nach 90 s
+    grid_options:
+      columns: 6
+      rows: auto
+  - type: custom:button-card
+    entity: sensor.anycubic_kobra_s1_ace_active_filament
+    name: Aktives Filament
+    icon: mdi:printer-3d-nozzle
+    show_state: true
+    tap_action:
+      action: none
+    styles:
+      card:
+      - background: '#2c2c2e'
+      - border-radius: 12px
+      - padding: 14px
+      - border: '1px solid #444'
+      name:
+      - color: '#888'
+      - font-size: 11px
+      - text-transform: uppercase
+      - letter-spacing: 1px
+      state:
+      - font-size: 16px
+      - color: '#fff'
+      - font-weight: 700
+      icon:
+      - color: '[[[ var e = states[''sensor.anycubic_kobra_s1_ace_active_filament'']; if (!e || e.state === ''unavailable'' || e.state === ''unknown'') return ''#555''; var a = e.attributes || {}; return a.color_hex || ''#555''; ]]]'
+      - width: 24px
+      label:
+      - color: '#aaa'
+      - font-size: 11px
+      - font-style: italic
+      - margin-top: 2px
+    state_display: '[[[ var e = states[''sensor.anycubic_kobra_s1_ace_active_filament'']; if (!e || e.state === ''unavailable'' || e.state === ''unknown'') return ''—''; var a = e.attributes || {}; if (a.local_slot === undefined || a.local_slot === null) return e.state; var c = a.color_hex || ''#888''; var dot = ''<span style="display:inline-block;width:14px;height:14px;border-radius:50%;background:'' + c + '';border:2px solid rgba(255,255,255,0.6);box-shadow:0 0 0 1px rgba(0,0,0,0.5);vertical-align:-3px;margin-left:5px;"></span>''; return ''Slot '' + a.local_slot + '' · '' + (a.material_type || ''-'') + dot; ]]]'
+    grid_options:
+      columns: 6
+      rows: auto
+    show_label: true
+    label: '[[[ var e = states[''sensor.anycubic_kobra_s1_ace_active_filament'']; if (!e || e.state === ''unavailable'' || e.state === ''unknown'') return ''noch kein Wechsel erfasst''; var d = new Date(e.last_changed); return ''aktiv seit '' + d.toLocaleTimeString(''de-DE'', {hour: ''2-digit'', minute: ''2-digit''}); ]]]'
+  - type: custom:button-card
+    show_icon: false
+    show_name: false
+    show_state: false
+    show_label: false
+    tap_action:
+      action: none
+    custom_fields:
+      fortschritt: '[[[ var v = states[''sensor.anycubic_kobra_s1_job_progress''].state; return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><ha-icon icon="mdi:progress-check" style="color:#27ae60;--mdc-icon-size:22px;"></ha-icon><div style="color:#888;font-size:10px;text-transform:uppercase;letter-spacing:1px;">Fortschritt</div><div style="color:#27ae60;font-size:20px;font-weight:700;">${v}%</div></div>`; ]]]'
+      verstrichen: '[[[ var fn = function(r){ if(r===''unknown''||r===''unavailable''||r===''None'')return ''—''; var m=parseInt(r); if(isNaN(m))return ''—''; var d=Math.floor(m/1440); var h=Math.floor((m%1440)/60); var mi=m%60; if(d>0)return d+''d ''+h+''h ''+mi+''m''; if(h>0)return h+''h ''+mi+''m''; return mi+''m''; }; var v = fn(states[''sensor.anycubic_kobra_s1_job_time_elapsed''].state); return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><ha-icon icon="mdi:timer" style="color:#4fc3f7;--mdc-icon-size:22px;"></ha-icon><div style="color:#888;font-size:10px;text-transform:uppercase;letter-spacing:1px;">Verstrichen</div><div style="color:#fff;font-size:18px;font-weight:700;">${v}</div></div>`; ]]]'
+      restzeit: '[[[ var fn = function(r){ if(r===''unknown''||r===''unavailable''||r===''None'')return ''—''; var m=parseInt(r); if(isNaN(m))return ''—''; var d=Math.floor(m/1440); var h=Math.floor((m%1440)/60); var mi=m%60; if(d>0)return d+''d ''+h+''h ''+mi+''m''; if(h>0)return h+''h ''+mi+''m''; return mi+''m''; }; var v = fn(states[''sensor.anycubic_kobra_s1_job_time_remaining''].state); return `<div style="display:flex;flex-direction:column;align-items:center;gap:4px;"><ha-icon icon="mdi:timer-sand" style="color:#f1c40f;--mdc-icon-size:22px;"></ha-icon><div style="color:#888;font-size:10px;text-transform:uppercase;letter-spacing:1px;">Restzeit</div><div style="color:#fff;font-size:18px;font-weight:700;">${v}</div></div>`; ]]]'
+    styles:
+      card:
+      - background: '#2c2c2e'
+      - border-radius: 12px
+      - padding: 14px
+      grid:
+      - grid-template-areas: '"fortschritt verstrichen restzeit"'
+      - grid-template-columns: 1fr 1fr 1fr
+      - gap: 12px
+  - type: custom:button-card
+    name: lüfter
+    icon: mdi:fan
+    show_state: false
+    styles:
+      card:
+      - background: '#050510'
+      - border-radius: 12px
+      - padding: 10px 16px
+      - border-bottom: 2px solid "#00d4ff"
+      - margin-top: 8px
+      - box-shadow: '0 0 12px #00d4ff44'
+      name:
+      - font-family: monospace
+      - font-size: 13px
+      - letter-spacing: 2px
+      - color: '#00d4ff'
+      - text-transform: lowercase
+      icon:
+      - color: '#00d4ff'
+      - width: 18px
+    tap_action:
+      action: none
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_fan_speed
+      name: Bauteil
+      icon: mdi:fan
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 20px
+        - color: '#fff'
+        - font-weight: 700
+        icon:
+        - color: '#4fc3f7'
+        - width: 24px
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_aux_fan_speed
+      name: Zusatz
+      icon: mdi:fan-plus
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 20px
+        - color: '#fff'
+        - font-weight: 700
+        icon:
+        - color: '#4fc3f7'
+        - width: 24px
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_box_fan_level
+      name: Box
+      icon: mdi:fan-auto
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 20px
+        - color: '#fff'
+        - font-weight: 700
+        icon:
+        - color: '#4fc3f7'
+        - width: 24px
+- type: grid
+  cards:
+  - type: custom:button-card
+    name: status
+    icon: mdi:printer-3d-nozzle
+    show_state: false
+    styles:
+      card:
+      - background: '#050510'
+      - border-radius: 12px
+      - padding: 10px 16px
+      - border-bottom: 2px solid "#00d4ff"
+      - margin-top: 8px
+      - box-shadow: '0 0 12px #00d4ff44'
+      name:
+      - font-family: monospace
+      - font-size: 13px
+      - letter-spacing: 2px
+      - color: '#00d4ff'
+      - text-transform: lowercase
+      icon:
+      - color: '#00d4ff'
+      - width: 18px
+    tap_action:
+      action: none
+  - type: custom:button-card
+    entity: sensor.anycubic_kobra_s1_current_status
+    name: Status
+    icon: mdi:printer-3d
+    show_state: true
+    show_label: true
+    label: '[[[ var j = states[''sensor.anycubic_kobra_s1_job_name''].state; return (j && j !== ''unknown'' && j !== ''unavailable'' && j !== '''') ? j : ''—''; ]]]'
+    tap_action:
+      action: none
+    styles:
+      card:
+      - background: '[[[ var s = entity.state; return (s === ''printing'' || s === ''busy'') ? ''#0d2818'' : (s === ''paused'' ? ''#2d2500'' : ''#2c2c2e''); ]]]'
+      - border-radius: 12px
+      - padding: 14px
+      - border: '[[[ var s = entity.state; return (s === ''printing'' || s === ''busy'') ? ''1px solid #27ae60'' : (s === ''paused'' ? ''1px solid #f1c40f'' : ''1px solid #444''); ]]]'
+      name:
+      - color: '#888'
+      - font-size: 11px
+      - text-transform: uppercase
+      - letter-spacing: 1px
+      state:
+      - font-size: 22px
+      - color: '[[[ var s = entity.state; return (s === ''printing'' || s === ''busy'') ? ''#27ae60'' : (s === ''paused'' ? ''#f1c40f'' : ''#aaa''); ]]]'
+      - font-weight: 700
+      - text-transform: uppercase
+      label:
+      - color: '#aaa'
+      - font-size: 12px
+      icon:
+      - color: '[[[ var s = entity.state; return (s === ''printing'' || s === ''busy'') ? ''#27ae60'' : (s === ''paused'' ? ''#f1c40f'' : ''#555''); ]]]'
+      - width: 28px
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_job_current_layer
+      name: Layer
+      icon: mdi:layers-triple
+      show_state: true
+      show_label: true
+      label: '[[[ var t = states[''sensor.anycubic_kobra_s1_job_total_layers''].state; return ''/ '' + ((t && t !== ''unknown'') ? t : ''—''); ]]]'
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 22px
+        - color: '#fff'
+        - font-weight: 700
+        label:
+        - color: '#aaa'
+        - font-size: 12px
+        icon:
+        - color: '#9b59b6'
+        - width: 24px
+    - type: tile
+      entity: sensor.anycubic_kobra_s1_job_eta
+      name: ETA
+  - type: picture-entity
+    entity: image.anycubic_kobra_s1_job_preview
+    name: Job Preview
+    show_state: false
+    show_name: false
+    tap_action:
+      action: none
+    hold_action:
+      action: none
+- type: grid
+  column_span: 1
+  cards:
+  - type: custom:button-card
+    name: temperaturen
+    icon: mdi:thermometer
+    show_state: false
+    styles:
+      card:
+      - background: '#050510'
+      - border-radius: 12px
+      - padding: 10px 16px
+      - border-bottom: 2px solid "#00d4ff"
+      - box-shadow: '0 0 12px #00d4ff44'
+      name:
+      - font-family: monospace
+      - font-size: 13px
+      - letter-spacing: 2px
+      - color: '#00d4ff'
+      - text-transform: lowercase
+      icon:
+      - color: '#00d4ff'
+      - width: 18px
+    tap_action:
+      action: none
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_nozzle_temperature
+      name: Düse
+      icon: mdi:printer-3d-nozzle-heat
+      show_state: true
+      show_label: true
+      label: '[[[ var t = states[''sensor.anycubic_kobra_s1_target_nozzle_temperature''].state; var e = states[''input_number.kobra_duse_temperatur_offset'']; var o = e ? parseFloat(e.state) : 0; var s = (!isNaN(o) && o !== 0) ? '' ('' + (o > 0 ? ''+'' : '''') + o.toFixed(0) + '')'' : ''''; return ''Ziel: '' + t + '' °C'' + s; ]]]'
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 28px
+        - color: '#fff'
+        - font-weight: 700
+        label:
+        - color: '#aaa'
+        - font-size: 11px
+        icon:
+        - color: '#e67e22'
+        - width: 24px
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_hotbed_temperature
+      name: Bett
+      icon: mdi:radiator
+      show_state: true
+      show_label: true
+      label: '[[[ var t = states[''sensor.anycubic_kobra_s1_target_hotbed_temperature''].state; var e = states[''input_number.kobra_bett_temperatur_offset'']; var o = e ? parseFloat(e.state) : 0; var s = (!isNaN(o) && o !== 0) ? '' ('' + (o > 0 ? ''+'' : '''') + o.toFixed(0) + '')'' : ''''; return ''Ziel: '' + t + '' °C'' + s; ]]]'
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 28px
+        - color: '#fff'
+        - font-weight: 700
+        label:
+        - color: '#aaa'
+        - font-size: 11px
+        icon:
+        - color: '#e67e22'
+        - width: 24px
+  - type: tile
+    entity: input_number.kobra_duse_temperatur_offset
+    name: 'Düse: Feinjustierung ±10 °C'
+    icon: mdi:printer-3d-nozzle-heat
+    features_position: bottom
+    vertical: false
+    tap_action:
+      action: none
+    features:
+    - type: numeric-input
+      style: slider
+  - type: tile
+    entity: input_number.kobra_bett_temperatur_offset
+    name: 'Bett: Feinjustierung ±10 °C'
+    icon: mdi:radiator
+    features_position: bottom
+    vertical: false
+    tap_action:
+      action: none
+    features:
+    - type: numeric-input
+      style: slider
+  - type: custom:button-card
+    name: ace pro
+    icon: mdi:tray-full
+    show_state: false
+    styles:
+      card:
+      - background: '#050510'
+      - border-radius: 12px
+      - padding: 10px 16px
+      - border-bottom: 2px solid "#00d4ff"
+      - margin-top: 8px
+      - box-shadow: '0 0 12px #00d4ff44'
+      name:
+      - font-family: monospace
+      - font-size: 13px
+      - letter-spacing: 2px
+      - color: '#00d4ff'
+      - text-transform: lowercase
+      icon:
+      - color: '#00d4ff'
+      - width: 18px
+    tap_action:
+      action: none
+  - type: custom:button-card
+    show_icon: false
+    show_name: false
+    show_state: false
+    show_label: false
+    tap_action:
+      action: none
+    custom_fields:
+      slot1: '[[[ var e = states[''sensor.anycubic_kobra_s1_ace_spools'']; var a = (e && e.attributes) ? e.attributes : {}; var info = a.spool_info || null; var s = info && info[0]; var af = states[''sensor.anycubic_kobra_s1_ace_active_filament'']; var act = (!!af && !!af.attributes && af.attributes.local_slot === 1); var lbl = act ? ''<div style="color:#27ae60;font-size:9px;font-weight:700;letter-spacing:1px;">AKTIV</div>'' : ''<div style="font-size:9px;">&nbsp;</div>''; if (!s || !s.spool_loaded) { return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 1</div><div style="width:34px;height:34px;border-radius:50%;background:#1a1a1a;border:2px dashed #555;"></div><div style="color:#666;font-size:11px;">leer</div>'' + lbl + ''</div>''; } var c = s.color || [80,80,80]; var rgb = ''rgb('' + c[0] + '','' + c[1] + '','' + c[2] + '')''; var mat = s.material_type || ''-''; var ring = act ? ''3px solid #27ae60'' : ''2px solid #666''; var glow = act ? ''box-shadow:0 0 10px #27ae60aa;'' : ''box-shadow:0 0 4px rgba(0,0,0,0.6),inset 0 0 6px rgba(0,0,0,0.3);''; return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 1</div><div style="width:34px;height:34px;border-radius:50%;background:'' + rgb + '';border:'' + ring + '';'' + glow + ''"></div><div style="color:#fff;font-size:12px;font-weight:700;">'' + mat + ''</div>'' + lbl + ''</div>''; ]]]'
+      slot2: '[[[ var e = states[''sensor.anycubic_kobra_s1_ace_spools'']; var a = (e && e.attributes) ? e.attributes : {}; var info = a.spool_info || null; var s = info && info[1]; var af = states[''sensor.anycubic_kobra_s1_ace_active_filament'']; var act = (!!af && !!af.attributes && af.attributes.local_slot === 2); var lbl = act ? ''<div style="color:#27ae60;font-size:9px;font-weight:700;letter-spacing:1px;">AKTIV</div>'' : ''<div style="font-size:9px;">&nbsp;</div>''; if (!s || !s.spool_loaded) { return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 2</div><div style="width:34px;height:34px;border-radius:50%;background:#1a1a1a;border:2px dashed #555;"></div><div style="color:#666;font-size:11px;">leer</div>'' + lbl + ''</div>''; } var c = s.color || [80,80,80]; var rgb = ''rgb('' + c[0] + '','' + c[1] + '','' + c[2] + '')''; var mat = s.material_type || ''-''; var ring = act ? ''3px solid #27ae60'' : ''2px solid #666''; var glow = act ? ''box-shadow:0 0 10px #27ae60aa;'' : ''box-shadow:0 0 4px rgba(0,0,0,0.6),inset 0 0 6px rgba(0,0,0,0.3);''; return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 2</div><div style="width:34px;height:34px;border-radius:50%;background:'' + rgb + '';border:'' + ring + '';'' + glow + ''"></div><div style="color:#fff;font-size:12px;font-weight:700;">'' + mat + ''</div>'' + lbl + ''</div>''; ]]]'
+      slot3: '[[[ var e = states[''sensor.anycubic_kobra_s1_ace_spools'']; var a = (e && e.attributes) ? e.attributes : {}; var info = a.spool_info || null; var s = info && info[2]; var af = states[''sensor.anycubic_kobra_s1_ace_active_filament'']; var act = (!!af && !!af.attributes && af.attributes.local_slot === 3); var lbl = act ? ''<div style="color:#27ae60;font-size:9px;font-weight:700;letter-spacing:1px;">AKTIV</div>'' : ''<div style="font-size:9px;">&nbsp;</div>''; if (!s || !s.spool_loaded) { return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 3</div><div style="width:34px;height:34px;border-radius:50%;background:#1a1a1a;border:2px dashed #555;"></div><div style="color:#666;font-size:11px;">leer</div>'' + lbl + ''</div>''; } var c = s.color || [80,80,80]; var rgb = ''rgb('' + c[0] + '','' + c[1] + '','' + c[2] + '')''; var mat = s.material_type || ''-''; var ring = act ? ''3px solid #27ae60'' : ''2px solid #666''; var glow = act ? ''box-shadow:0 0 10px #27ae60aa;'' : ''box-shadow:0 0 4px rgba(0,0,0,0.6),inset 0 0 6px rgba(0,0,0,0.3);''; return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 3</div><div style="width:34px;height:34px;border-radius:50%;background:'' + rgb + '';border:'' + ring + '';'' + glow + ''"></div><div style="color:#fff;font-size:12px;font-weight:700;">'' + mat + ''</div>'' + lbl + ''</div>''; ]]]'
+      slot4: '[[[ var e = states[''sensor.anycubic_kobra_s1_ace_spools'']; var a = (e && e.attributes) ? e.attributes : {}; var info = a.spool_info || null; var s = info && info[3]; var af = states[''sensor.anycubic_kobra_s1_ace_active_filament'']; var act = (!!af && !!af.attributes && af.attributes.local_slot === 4); var lbl = act ? ''<div style="color:#27ae60;font-size:9px;font-weight:700;letter-spacing:1px;">AKTIV</div>'' : ''<div style="font-size:9px;">&nbsp;</div>''; if (!s || !s.spool_loaded) { return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 4</div><div style="width:34px;height:34px;border-radius:50%;background:#1a1a1a;border:2px dashed #555;"></div><div style="color:#666;font-size:11px;">leer</div>'' + lbl + ''</div>''; } var c = s.color || [80,80,80]; var rgb = ''rgb('' + c[0] + '','' + c[1] + '','' + c[2] + '')''; var mat = s.material_type || ''-''; var ring = act ? ''3px solid #27ae60'' : ''2px solid #666''; var glow = act ? ''box-shadow:0 0 10px #27ae60aa;'' : ''box-shadow:0 0 4px rgba(0,0,0,0.6),inset 0 0 6px rgba(0,0,0,0.3);''; return ''<div style="display:flex;flex-direction:column;align-items:center;gap:5px;"><div style="color:#888;font-size:9px;text-transform:uppercase;letter-spacing:1px;">Slot 4</div><div style="width:34px;height:34px;border-radius:50%;background:'' + rgb + '';border:'' + ring + '';'' + glow + ''"></div><div style="color:#fff;font-size:12px;font-weight:700;">'' + mat + ''</div>'' + lbl + ''</div>''; ]]]'
+    styles:
+      card:
+      - background: '#2c2c2e'
+      - border-radius: 12px
+      - padding: 14px
+      grid:
+      - grid-template-areas: '"slot1 slot2 slot3 slot4"'
+      - grid-template-columns: 1fr 1fr 1fr 1fr
+      - gap: 8px
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_ace_current_temperature
+      name: ACE Temp
+      icon: mdi:thermometer
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 22px
+        - color: '#fff'
+        - font-weight: 700
+        icon:
+        - color: '#4fc3f7'
+        - width: 24px
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_ace_spools
+      name: ACE Spools
+      icon: mdi:filmstrip
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '[[[ return entity.state === ''active'' ? ''#0d2818'' : ''#2c2c2e'' ]]]'
+        - border-radius: 12px
+        - padding: 14px
+        - border: '[[[ return entity.state === ''active'' ? ''1px solid #27ae60'' : ''1px solid #444'' ]]]'
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 16px
+        - color: '[[[ return entity.state === ''active'' ? ''#27ae60'' : ''#aaa'' ]]]'
+        - font-weight: 700
+        - text-transform: uppercase
+        icon:
+        - color: '[[[ return entity.state === ''active'' ? ''#27ae60'' : ''#555'' ]]]'
+        - width: 24px
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_material_rack_spools
+      name: Material Rack
+      icon: mdi:filmstrip-box-multiple
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '[[[ return entity.state === ''active'' ? ''#0d2818'' : ''#2c2c2e'' ]]]'
+        - border-radius: 12px
+        - padding: 14px
+        - border: '[[[ return entity.state === ''active'' ? ''1px solid #27ae60'' : ''1px solid #444'' ]]]'
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 16px
+        - color: '[[[ return entity.state === ''active'' ? ''#27ae60'' : ''#aaa'' ]]]'
+        - font-weight: 700
+        - text-transform: uppercase
+        icon:
+        - color: '[[[ return entity.state === ''active'' ? ''#27ae60'' : ''#555'' ]]]'
+        - width: 24px
+  - type: custom:button-card
+    entity: binary_sensor.anycubic_kobra_s1_drying_active
+    name: Trocknen
+    icon: mdi:hair-dryer
+    show_state: true
+    show_label: true
+    label: '[[[ if (entity.state !== ''on'') return ''Inaktiv''; var t = states[''sensor.anycubic_kobra_s1_drying_target_temperature''].state; var r = states[''sensor.anycubic_kobra_s1_drying_remaining_time''].state; return ''Ziel: '' + t + '' °C · Rest: '' + r + '' min''; ]]]'
+    tap_action:
+      action: none
+    styles:
+      card:
+      - background: '[[[ return entity.state === ''on'' ? ''#2d1b00'' : ''#2c2c2e'' ]]]'
+      - border-radius: 12px
+      - padding: 14px
+      - border: '[[[ return entity.state === ''on'' ? ''1px solid #e67e22'' : ''1px solid #444'' ]]]'
+      name:
+      - color: '#888'
+      - font-size: 11px
+      - text-transform: uppercase
+      - letter-spacing: 1px
+      state:
+      - font-size: 18px
+      - color: '[[[ return entity.state === ''on'' ? ''#e67e22'' : ''#aaa'' ]]]'
+      - font-weight: 700
+      - text-transform: uppercase
+      label:
+      - color: '#aaa'
+      - font-size: 11px
+      icon:
+      - color: '[[[ return entity.state === ''on'' ? ''#e67e22'' : ''#555'' ]]]'
+      - width: 24px
+  - type: custom:button-card
+    name: info
+    icon: mdi:information-outline
+    show_state: false
+    styles:
+      card:
+      - background: '#050510'
+      - border-radius: 12px
+      - padding: 10px 16px
+      - border-bottom: 2px solid "#00d4ff"
+      - margin-top: 8px
+      - box-shadow: '0 0 12px #00d4ff44'
+      name:
+      - font-family: monospace
+      - font-size: 13px
+      - letter-spacing: 2px
+      - color: '#00d4ff'
+      - text-transform: lowercase
+      icon:
+      - color: '#00d4ff'
+      - width: 18px
+    tap_action:
+      action: none
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_print_speed
+      name: Druckgeschw.
+      icon: mdi:speedometer
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 22px
+        - color: '#fff'
+        - font-weight: 700
+        icon:
+        - color: '#4fc3f7'
+        - width: 24px
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_job_speed_mode
+      name: Modus
+      icon: mdi:tune
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 22px
+        - color: '#fff'
+        - font-weight: 700
+        icon:
+        - color: '#4fc3f7'
+        - width: 24px
+  - type: horizontal-stack
+    cards:
+    - type: custom:button-card
+      entity: sensor.anycubic_kobra_s1_job_z_thickness
+      name: Z-Layer
+      icon: mdi:layers
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '#2c2c2e'
+        - border-radius: 12px
+        - padding: 14px
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 22px
+        - color: '#fff'
+        - font-weight: 700
+        icon:
+        - color: '#4fc3f7'
+        - width: 24px
+    - type: custom:button-card
+      entity: binary_sensor.anycubic_kobra_s1_printer_online
+      name: Drucker
+      icon: mdi:printer-3d
+      show_state: true
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: '[[[ return entity.state === ''on'' ? ''#0d2818'' : ''#2a0a0a'' ]]]'
+        - border-radius: 12px
+        - padding: 14px
+        - border: '[[[ return entity.state === ''on'' ? ''1px solid #27ae60'' : ''1px solid #e74c3c'' ]]]'
+        name:
+        - color: '#888'
+        - font-size: 11px
+        - text-transform: uppercase
+        - letter-spacing: 1px
+        state:
+        - font-size: 16px
+        - color: '[[[ return entity.state === ''on'' ? ''#27ae60'' : ''#e74c3c'' ]]]'
+        - font-weight: 700
+        - text-transform: uppercase
+        icon:
+        - color: '[[[ return entity.state === ''on'' ? ''#27ae60'' : ''#e74c3c'' ]]]'
+        - width: 24px
+  - type: horizontal-stack
+    cards:
+    - type: tile
+      entity: update.anycubic_kobra_s1_printer_firmware
+      name: Drucker FW
+    - type: tile
+      entity: update.anycubic_kobra_s1_ace_firmware
+      name: ACE FW

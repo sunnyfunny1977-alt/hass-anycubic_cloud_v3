@@ -38,6 +38,7 @@ Die Integration wird ueber HACS als benutzerdefiniertes Repository installiert.
 - [🎨 Frontend-Card](#-frontend-card)
 - [🖼️ Galerie](#-galerie)
 - [🧩 Features](#-features)
+- [🧪 Muster-Dashboard](#-muster-dashboard)
 - [📷 Kamera / Nebenansicht](#-kamera--nebenansicht)
 - [📦 Installation über HACS (empfohlen)](#-installation-über-hacs-empfohlen)
 - [🖐️ Manuelle Installation](#-manuelle-installation)
@@ -135,6 +136,30 @@ Der Dienst benennt nur Entity-Registry-Eintraege dieser Integration um. Er legt 
 - Native Kameralicht-Entity fuer Drucker, die das Anycubic-Kamera-/Lichtkommando unterstuetzen
 - Spulen-Trocknung & Materialmanagement (ACE)
 - Konfigurierbarer MQTT-Modus („nur beim Drucken“, dauerhaft, deaktiviert)
+
+---
+
+## 🧪 Muster-Dashboard
+
+Ein vollstaendiges Beispiel-Dashboard liegt als [`examples/dashboard-kobra-s1.yaml`](examples/dashboard-kobra-s1.yaml) bei. Es zeigt Kamera, Druckfortschritt, Temperaturen, ACE-Slots mit Farbringen, aktives Filament, Luefter, Geschwindigkeit und Firmware-Updates.
+
+Einfuegen ueber **Dashboard → Stift → Drei-Punkte-Menue → Raw-Konfigurationseditor**, den Block unter `views:` einhaengen.
+
+### ⚠️ Die Kameraflaeche nutzt eine externe Kamera
+
+Das ist der wichtigste Punkt an diesem Muster: **Die Kameraflaeche zeigt nicht den Anycubic-Cloudstream.**
+
+Der Cloudstream laeuft ueber Agora-RTC, ist verschluesselt und benoetigt das Agora-Browser-SDK. Er laesst sich deshalb nicht als Home-Assistant-`camera.*`-Entity abbilden und bleibt dem mitgelieferten Anycubic-Panel vorbehalten. Details dazu unter [Kamera / Nebenansicht](#-kamera--nebenansicht).
+
+Im Originalaufbau dieses Musters haengt an der Stelle eine **SONOFF CAM-S1**, die als eigene `camera.*`-Entity in Home Assistant eingebunden ist. Jede beliebige Kamera mit einer `camera.*`-Entity funktioniert genauso, etwa eine MJPEG- oder RTSP-Kamera oder die integrierte Drucker-Webcam unter alternativer Firmware wie Rinkhals.
+
+Im YAML steht dafuer der Platzhalter `camera.drucker_kamera`. Ohne passende Kamera-Entity bleibt die Flaeche leer, der Rest des Dashboards funktioniert unabhaengig davon.
+
+### Weitere Voraussetzungen
+
+- HACS-Card **button-card** (`custom:button-card`) — ohne sie bleiben die meisten Karten leer
+- Optional drei Template-Helfer fuer die Einblendung im Kamerabild sowie zwei `input_number`-Helfer fuer die Temperatur-Feinjustierung; welche genau, steht im Kopf der YAML-Datei
+- Die Entity-IDs enthalten den Druckernamen, im Muster `anycubic_kobra_s1`. Heisst dein Drucker anders, vor dem Einfuegen per Suchen-und-Ersetzen anpassen
 
 ---
 

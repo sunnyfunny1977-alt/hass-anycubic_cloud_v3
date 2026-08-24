@@ -66,6 +66,14 @@ Detailed token extraction, camera setup, Rinkhals/Moonraker mapping, entity migr
 
 The recommended companion dashboard card is [ljschmitt/hass-anycubic_card](https://github.com/ljschmitt/hass-anycubic_card). The integration also includes its own Home Assistant side panel, so the external card is optional.
 
+## Sample dashboard
+
+A complete example dashboard ships as [`examples/dashboard-kobra-s1.yaml`](examples/dashboard-kobra-s1.yaml).
+
+**Its camera tile uses an external camera, not the Anycubic cloud stream.** The cloud stream runs over Agora RTC with channel encryption and cannot be exposed as a Home Assistant `camera.*` entity, so it stays inside the bundled Anycubic panel. The original setup uses a **SONOFF CAM-S1**; any camera with a `camera.*` entity works. The YAML carries `camera.drucker_kamera` as a placeholder.
+
+Requires the HACS **button-card**. Entity IDs contain the printer name (`anycubic_kobra_s1` in the sample) and need adjusting for a differently named printer.
+
 ## Camera behavior
 
 The cloud camera stream is started only after the user presses Play. It is stopped when leaving the view, changing printers, or stopping playback. This prevents background camera sessions.
