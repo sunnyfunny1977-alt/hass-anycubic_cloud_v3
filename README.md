@@ -14,12 +14,11 @@ Die Integration wird ueber HACS als benutzerdefiniertes Repository installiert.
 
 > **Eigenstaendige Fork-Linie.** Dieses Repository hat ab **1.0.0** eine eigene Versionszaehlung und ist bewusst von der Nummerierung des Ursprungs-Forks entkoppelt, damit sich Releases und Tags nicht gegenseitig ueberschreiben. Der Funktionsstand entspricht 0.3.8 dieses Repositorys zuzueglich der ACE-Erweiterungen. Releases aus [ljschmitt/hass-anycubic_cloud_v3](https://github.com/ljschmitt/hass-anycubic_cloud_v3) mit gleicher Nummer sind **nicht** identisch.
 
-> 🗓️ **Aktuelles Release: 1.0.1**
+> 🗓️ **Aktuelles Release: 1.0.2**
 >
-> - Erste Version der eigenen Versionslinie. Inhaltlich der bisherige Stand 0.3.8 dieses Repositorys, nur mit eigener Nummerierung, damit Tags und Releases nicht mit dem Ursprungs-Fork kollidieren.
-> - Neu: Sensor `ACE Active Filament` (bei zweiter Box zusaetzlich `Secondary ACE Active Filament`) zeigt das Filament, das gerade in der Duese steckt, z. B. `PLA #0047BB`. Materialtyp, SKU, Farbe, Slotnummer und Box-ID stehen als Attribute daneben.
-> - Behoben: Das aktive Filament verschwand bisher wenige Sekunden nach dem Farbwechsel wieder. Der Drucker meldet `loaded_slot` nur waehrend des Wechsels und danach `-1`, und jeder Cloud-Poll hat die Box aus genau diesem Wert neu aufgebaut. Der zuletzt tatsaechlich gefoerderte Slot wird jetzt gehalten, ueberlebt den Poll und wird gespeichert, also auch einen Neustart von Home Assistant.
-> - Das rohe `loaded_slot`-Attribut am `ace_spools`-Sensor bleibt unveraendert und zeigt weiterhin den Momentanwert.
+> - Das dokumentierte PowerShell-Skript zum Auslesen des Slicer-Next-Tokens durchsucht jetzt alle `debug_*.log`, liest den Zeitstempel jeder Trefferzeile und nimmt den zeitlich neuesten Token. Der bisherige Einzeiler waehlte die neueste Logdatei nach Aenderungsdatum, was unzuverlaessig ist, weil Slicer Next auch an aeltere Logs weiterschreibt.
+> - Das Skript liegt jetzt als Datei bei: `scripts/anycubic-token.ps1`. Es meldet Quelldatei, Zeitstempel und Zeichenzahl und bricht mit klarer Meldung ab, wenn kein Token gefunden wird.
+> - Der Slicer-Next-Dialog verweist auf den README-Abschnitt, statt eine zweite Fassung des Befehls zu fuehren.
 >
 > Getestet mit **Home Assistant 2026.6.1**, freigegeben ab **Home Assistant 2025.10.0**.
 > MQTT-Echtzeitupdates benoetigen **Slicer Next (Windows)** und dessen **Access-Token**.
@@ -283,12 +282,13 @@ Fehler, Verbesserungsvorschlaege und Erfahrungen mit weiteren Druckermodellen ko
    $hit.Token | Set-Clipboard
    "OK - $($hit.File) ($($hit.Time)), $($hit.Token.Length) Zeichen kopiert."
    ```
-3. Alternative fuer aeltere Slicer-Versionen mit Klartext-Token in der `.conf`:
+3. Das Skript liegt auch als Datei im Repository: [`scripts/anycubic-token.ps1`](scripts/anycubic-token.ps1) — herunterladen und in PowerShell ausfuehren, statt es zu kopieren.
+4. Alternative fuer aeltere Slicer-Versionen mit Klartext-Token in der `.conf`:
    ```powershell
    $path = "$env:AppData\AnycubicSlicerNext\AnycubicSlicerNext.conf"; 
    (Select-String -Path $path -Pattern '"access_token"\s*:\s*"([^"]+)"').Matches.Groups[1].Value | Set-Clipboard
    ```
-4. In Integration einfügen → fertig
+5. In Integration einfügen → fertig
 
 > Hinweis: Der aktuelle Slicer-Next-Token ist ein JWT und besteht aus drei durch Punkte getrennten Teilen. Die Integration entfernt Anführungszeichen, Whitespace und kann auch Log-Zeilen wie `accessToken = ...` verarbeiten.
 

@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2
+
+### Changed
+
+- The documented PowerShell token command now scans every `debug_*.log`, parses the timestamp from each matching line and takes the newest `accessToken` across all of them. The previous one-liner picked the newest log by file mtime and then its last match, which is unreliable because Slicer Next keeps appending to older logs. It also reports the source file, timestamp and token length, and fails with a clear message when no token is found.
+- The script ships as [`scripts/anycubic-token.ps1`](scripts/anycubic-token.ps1) so it can be downloaded instead of copied out of the README.
+- The Slicer Next config-flow description points at the README section instead of carrying its own copy of the command. Two copies would drift, and the script contains regex quantifiers such as `\d{4}` that Home Assistant would read as translation placeholders.
+
 ## 1.0.1
 
 ### Changed
