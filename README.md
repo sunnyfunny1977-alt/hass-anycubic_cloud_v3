@@ -141,6 +141,8 @@ Der Dienst benennt nur Entity-Registry-Eintraege dieser Integration um. Er legt 
 
 ## 🧪 Muster-Dashboard
 
+> 📄 **Installationsanleitung als PDF:** [`docs/Anycubic-HA-Integration-Installationsanleitung.pdf`](docs/Anycubic-HA-Integration-Installationsanleitung.pdf) — Installation, Token, Einrichtung und Uebernahme dieses Dashboards auf vier Seiten, inklusive der Hinweise zur Kamera und zur Anzeige-statt-Bedienung-Auslegung. Erzeugt mit [`docs/build_guide.py`](docs/build_guide.py).
+
 Ein vollstaendiges Beispiel-Dashboard liegt als [`examples/dashboard-kobra-s1.yaml`](examples/dashboard-kobra-s1.yaml) bei. Es zeigt Kamera, Druckfortschritt, Temperaturen, ACE-Slots mit Farbringen, aktives Filament, Luefter, Geschwindigkeit und Firmware-Updates.
 
 Einfuegen ueber **Dashboard → Stift → Drei-Punkte-Menue → Raw-Konfigurationseditor**, den Block unter `views:` einhaengen.
