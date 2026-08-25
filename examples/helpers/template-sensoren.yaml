@@ -1,0 +1,27 @@
+# Template-Sensoren fuer die Einblendung im Kamerabild
+#
+# WO BENOETIGT: Abschnitt "kamera" des Muster-Dashboards. Die drei Sensoren
+#   werden als state-label ueber das Kamerabild gelegt und zeigen Uhrzeit,
+#   Datum und eine kompakte Druckinfo (Fortschritt, Restzeit, Layer).
+#   Ohne sie bleibt das Kamerabild nutzbar, nur die Einblendung fehlt.
+#
+# EINBINDEN, Variante A (YAML):
+#   Diesen Block in die configuration.yaml uebernehmen und Home Assistant
+#   neu starten oder die Template-Entitaeten neu laden.
+#
+# EINBINDEN, Variante B (Oberflaeche):
+#   Einstellungen -> Geraete & Dienste -> Helfer -> Helfer anlegen ->
+#   Vorlage -> Vorlage fuer einen Sensor. Namen und Zustandsvorlage
+#   jeweils aus diesem Block uebernehmen.
+#
+# ANPASSEN: In "Kobra Overlay Druckinfo" steckt der Druckername
+#   "anycubic_kobra_s1". Heisst dein Drucker anders, hier mit ersetzen.
+
+template:
+- sensor:
+  - name: Kobra Overlay Uhrzeit
+    state: '{{ now().strftime(''%H:%M'') }}'
+  - name: Kobra Overlay Datum
+    state: '{{ now().strftime(''%d.%m.%Y'') }}'
+  - name: Kobra Overlay Druckinfo
+    state: '{% set p = states(''sensor.anycubic_kobra_s1_job_progress'') %}{% set r = states(''sensor.anycubic_kobra_s1_job_time_remaining'') %}{% set c = states(''sensor.anycubic_kobra_s1_job_current_layer'') %}{% set t = states(''sensor.anycubic_kobra_s1_job_total_layers'') %}{% set p_out = (p if p not in [''unknown'',''unavailable'',''None''] else ''—'') %}{% if r not in [''unknown'',''unavailable'',''None''] %}{% set m = r | int(0) %}{% set d = m // 1440 %}{% set h = (m % 1440) // 60 %}{% set mi = m % 60 %}{% if d > 0 %}{% set r_out = d ~ ''d '' ~ h ~ ''h '' ~ mi ~ ''m'' %}{% elif h > 0 %}{% set r_out = h ~ ''h '' ~ mi ~ ''m'' %}{% else %}{% set r_out = mi ~ ''m'' %}{% endif %}{% else %}{% set r_out = ''—'' %}{% endif %}{% set c_out = (c if c not in [''unknown'',''unavailable'',''None''] else ''—'') %}{% set t_out = (t if t not in [''unknown'',''unavailable'',''None''] else ''—'') %}{{ p_out }}% · {{ r_out }} · L {{ c_out }}/{{ t_out }}'

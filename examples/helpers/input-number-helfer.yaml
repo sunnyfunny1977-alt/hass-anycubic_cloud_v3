@@ -1,0 +1,56 @@
+# Zahlen-Helfer fuer die Temperatur-Feinjustierung
+#
+# WO BENOETIGT:
+#   kobra_duse_temperatur_offset / kobra_bett_temperatur_offset
+#     -> die beiden Schieberegler im Abschnitt "temperaturen" des
+#        Muster-Dashboards.
+#   kobra_duse_basis_zieltemperatur / kobra_bett_basis_zieltemperatur
+#     -> stehen NICHT auf dem Dashboard. Sie werden von den Automationen in
+#        automationen.yaml benoetigt, die den Offset auf den Drucker
+#        uebertragen. Ohne sie funktionieren die Regler nicht.
+#
+# EINBINDEN, Variante A (YAML):
+#   Block in die configuration.yaml uebernehmen, dann neu starten.
+#
+# EINBINDEN, Variante B (Oberflaeche):
+#   Einstellungen -> Geraete & Dienste -> Helfer -> Helfer anlegen -> Zahl.
+#   Wichtig: Die Entity-ID muss danach exakt dem Schluessel hier entsprechen,
+#   z. B. input_number.kobra_duse_temperatur_offset.
+#
+# HINWEIS: Ohne die Automationen aendern die Regler nur diese Helferwerte.
+#   Am Drucker passiert dann nichts. Das ist ein bewusst sicherer
+#   Ausgangszustand.
+
+input_number:
+  kobra_duse_temperatur_offset:
+    name: Kobra Düse Temperatur-Offset
+    icon: mdi:printer-3d-nozzle-heat
+    min: -10.0
+    max: 10.0
+    step: 1.0
+    unit_of_measurement: °C
+    mode: slider
+  kobra_bett_temperatur_offset:
+    name: Kobra Bett Temperatur-Offset
+    icon: mdi:radiator
+    min: -10.0
+    max: 10.0
+    step: 1.0
+    unit_of_measurement: °C
+    mode: slider
+  kobra_duse_basis_zieltemperatur:
+    name: Kobra Düse Basis-Zieltemperatur
+    icon: mdi:thermometer-lines
+    min: 0.0
+    max: 400.0
+    step: 1.0
+    unit_of_measurement: °C
+    mode: box
+  kobra_bett_basis_zieltemperatur:
+    name: Kobra Bett Basis-Zieltemperatur
+    icon: mdi:thermometer-lines
+    min: 0.0
+    max: 150.0
+    step: 1.0
+    unit_of_measurement: °C
+    mode: box

@@ -246,6 +246,41 @@ A(notebox(
     "Einfuegen per Suchen-und-Ersetzen austauschen.<br/><br/>"
     "<b>2. Die Kamera.</b> Siehe naechster Abschnitt."))
 
+A(P("Benoetigte Helfer und Automationen", S_H2))
+A(P("Einige Elemente des Musters greifen auf Home-Assistant-Helfer zu. Sie liegen fertig im Ordner "
+    "<font face='Courier'>examples/helpers/</font> und nennen im Kopf jeder Datei noch einmal, an welcher "
+    "Stelle sie gebraucht werden. Alle drei sind <b>optional</b>: Das Dashboard laeuft auch ohne sie, "
+    "einzelne Elemente bleiben dann aber wirkungslos.", S_BODY))
+A(table([
+    ["Datei", "Wird gebraucht fuer", "Ohne sie"],
+    ["template-sensoren.yaml",
+     "Uhrzeit, Datum und Druckinfo, die im Abschnitt <i>kamera</i> ueber das Kamerabild gelegt werden.",
+     "Kamerabild bleibt nutzbar, nur die Einblendung fehlt."],
+    ["input-number-helfer.yaml",
+     "Die beiden Schieberegler zur Temperatur-Feinjustierung im Abschnitt <i>temperaturen</i>. "
+     "Enthaelt zusaetzlich zwei Basiswert-Helfer, die nicht auf dem Dashboard erscheinen, aber von "
+     "den Automationen benoetigt werden.",
+     "Die Regler erscheinen nicht."],
+    ["automationen.yaml",
+     "Das automatische Ausschalten des Kameralichts nach 90 Sekunden sowie das Uebertragen des "
+     "Temperatur-Offsets an den Drucker.",
+     "Das Licht bleibt an, bis es von Hand ausgeschaltet wird. Die Regler aendern nur Helferwerte, "
+     "am Drucker passiert nichts."],
+], [44 * mm, 66 * mm, 55 * mm]))
+A(P("Template-Sensoren und Zahlen-Helfer lassen sich entweder als YAML in die "
+    "<font face='Courier'>configuration.yaml</font> uebernehmen oder ueber <b>Einstellungen -> "
+    "Geraete &amp; Dienste -> Helfer</b> anlegen. Die Automationen kommen an die "
+    "<font face='Courier'>automations.yaml</font> und werden anschliessend neu geladen.", S_BODY))
+A(notebox(
+    "In automationen.yaml zwei Platzhalter ersetzen",
+    "<font face='Courier'>DEINE_DRUCKER_DEVICE_ID</font> und "
+    "<font face='Courier'>DEINE_CONFIG_ENTRY_ID</font> sind Platzhalter. Die richtigen Werte erhaelt "
+    "man am einfachsten, indem man die Aktion einmal in der Oberflaeche zusammenklickt und danach in "
+    "die YAML-Ansicht wechselt.<br/><br/>"
+    "<b>Wichtig:</b> Die Automation <font face='Courier'>kobra_temperatur_offset_anwenden</font> ist "
+    "die <b>einzige</b> Stelle im gesamten Beispielpaket, die aktiv Werte an den Drucker sendet. "
+    "Alles andere ist reine Anzeige. Vor dem Einsatz bewusst pruefen."))
+
 # 7
 A(P("7. Die Kamera ist eine externe Kamera", S_H1))
 A(P("Das ist der Punkt, der am haeufigsten missverstanden wird: <b>Die Kameraflaeche im Muster-Dashboard "

@@ -72,6 +72,8 @@ A complete example dashboard ships as [`examples/dashboard-kobra-s1.yaml`](examp
 
 **Its camera tile uses an external camera, not the Anycubic cloud stream.** The cloud stream runs over Agora RTC with channel encryption and cannot be exposed as a Home Assistant `camera.*` entity, so it stays inside the bundled Anycubic panel. The original setup uses a **SONOFF CAM-S1**; any camera with a `camera.*` entity works. The YAML carries `camera.drucker_kamera` as a placeholder.
 
+Ready-made helpers live in [`examples/helpers/`](examples/helpers/): template sensors for the camera overlay, `input_number` helpers for the temperature sliders, and the automations that make the camera light auto-off and the temperature offset work. All optional; each file states where it is needed. The offset automation is the only part of the example package that writes to the printer.
+
 Requires the HACS **button-card**. Entity IDs contain the printer name (`anycubic_kobra_s1` in the sample) and need adjusting for a differently named printer.
 
 ## Camera behavior

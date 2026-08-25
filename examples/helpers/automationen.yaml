@@ -1,0 +1,162 @@
+# Automationen rund um das Muster-Dashboard
+#
+# Diese drei Automationen sind OPTIONAL. Das Dashboard funktioniert ohne sie,
+# zwei seiner Elemente bleiben dann aber wirkungslos beziehungsweise
+# beschriftet, ohne dass etwas dahinter steht.
+#
+# ---------------------------------------------------------------------------
+# 1) kobra_kameralicht_auto_aus
+#    WO: Karte "Kamera-Licht" im Abschnitt "kamera". Deren Beschriftung
+#        "Auto-Aus nach 90 s" beschreibt genau diese Automation. Ohne sie
+#        bleibt das Licht an, bis es von Hand ausgeschaltet wird.
+#
+# 2) kobra_temperatur_basiswerte
+# 3) kobra_temperatur_offset_anwenden
+#    WO: die beiden Schieberegler im Abschnitt "temperaturen". Erst diese
+#        beiden Automationen uebertragen den Offset auf den Drucker.
+#        Ohne sie veraendern die Regler nur den Helferwert.
+#        Sie arbeiten zusammen: (2) merkt sich die Zieltemperatur des Jobs als
+#        Basiswert und setzt den Offset auf 0, (3) sendet Basis + Offset an den
+#        Drucker, begrenzt auf sinnvolle Bereiche und nur waehrend eines Drucks.
+#
+# ---------------------------------------------------------------------------
+# UNBEDINGT ANPASSEN vor dem Einfuegen:
+#
+#   DEINE_DRUCKER_DEVICE_ID   -> Geraete-ID deines Druckers
+#   DEINE_CONFIG_ENTRY_ID     -> ID des Anycubic-Konfigurationseintrags
+#
+#   Beides findest du am einfachsten so: Automation in der Oberflaeche neu
+#   anlegen, die Aktion "Anycubic ... Zieltemperatur" auswaehlen, den Drucker
+#   als Geraet waehlen und anschliessend in die YAML-Ansicht wechseln. Dort
+#   stehen die richtigen Werte.
+#
+#   Ebenso den Druckernamen "anycubic_kobra_s1" in den Entity-IDs ersetzen,
+#   falls dein Drucker anders heisst.
+#
+# EINBINDEN: Block an die automations.yaml anhaengen, danach
+#   Entwicklerwerkzeuge -> YAML -> Automationen neu laden.
+#
+# ACHTUNG: (3) schreibt Zieltemperaturen an den Drucker. Das ist die einzige
+#   Stelle in diesem Beispielpaket, die aktiv in einen laufenden Druck
+#   eingreift. Vorher pruefen und bewusst einsetzen.
+
+- id: kobra_kameralicht_auto_aus
+  alias: 'Kobra Kamera-Licht: Auto-Aus nach 90 s'
+  description: Schaltet das Kamera-Licht des Kobra S1 automatisch 90 Sekunden nach dem Einschalten wieder aus.
+  triggers:
+  - trigger: state
+    entity_id: light.anycubic_kobra_s1_camera_light
+    to: 'on'
+    for:
+      seconds: 90
+  conditions: []
+  actions:
+  - action: light.turn_off
+    target:
+      entity_id: light.anycubic_kobra_s1_camera_light
+    data: {}
+  mode: single
+- id: kobra_temperatur_basiswerte
+  alias: 'Kobra S1: Temperatur-Basiswerte übernehmen'
+  description: Erkennt Zieltemperatur-Änderungen, die NICHT vom Offset-Slider stammen (Druckstart, Änderung am Drucker-Display), speichert sie als Basiswert und setzt den Offset zurück auf 0. Dadurch bleibt der Slider immer ±10 °C rund um die aktuelle Job-Zieltemperatur.
+  triggers:
+  - trigger: state
+    entity_id: sensor.anycubic_kobra_s1_target_nozzle_temperature
+    not_to:
+    - unknown
+    - unavailable
+    id: duese
+  - trigger: state
+    entity_id: sensor.anycubic_kobra_s1_target_hotbed_temperature
+    not_to:
+    - unknown
+    - unavailable
+    id: bett
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: duese
+      - condition: template
+        value_template: '{{ (trigger.to_state.state | float(0) - states(''input_number.kobra_duse_basis_zieltemperatur'') | float(-999) - states(''input_number.kobra_duse_temperatur_offset'') | float(0)) | abs > 0.5 }}'
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.kobra_duse_basis_zieltemperatur
+        data:
+          value: '{{ trigger.to_state.state | float(0) | round(0) }}'
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.kobra_duse_temperatur_offset
+        data:
+          value: 0
+    - conditions:
+      - condition: trigger
+        id: bett
+      - condition: template
+        value_template: '{{ (trigger.to_state.state | float(0) - states(''input_number.kobra_bett_basis_zieltemperatur'') | float(-999) - states(''input_number.kobra_bett_temperatur_offset'') | float(0)) | abs > 0.5 }}'
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.kobra_bett_basis_zieltemperatur
+        data:
+          value: '{{ trigger.to_state.state | float(0) | round(0) }}'
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.kobra_bett_temperatur_offset
+        data:
+          value: 0
+  mode: queued
+  max: 10
+- id: kobra_temperatur_offset_anwenden
+  alias: 'Kobra S1: Temperatur-Offset anwenden'
+  description: 'Überträgt den Offset-Slider (±10 °C) auf den Drucker: neue Zieltemperatur = Basis-Zieltemperatur + Offset. Begrenzt auf Düse 0–320 °C und Bett 0–110 °C. Läuft nur während eines aktiven Druckjobs.'
+  triggers:
+  - trigger: state
+    entity_id: input_number.kobra_duse_temperatur_offset
+    not_to:
+    - unknown
+    - unavailable
+    id: duese
+  - trigger: state
+    entity_id: input_number.kobra_bett_temperatur_offset
+    not_to:
+    - unknown
+    - unavailable
+    id: bett
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.anycubic_kobra_s1_job_in_progress
+    state: 'on'
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: duese
+      - condition: template
+        value_template: '{{ (duese_soll | float(0) - states(''sensor.anycubic_kobra_s1_target_nozzle_temperature'') | float(-999)) | abs > 0.5 }}'
+      sequence:
+      - action: anycubic_ha_integration.change_print_target_nozzle_temperature
+        target:
+          device_id: DEINE_DRUCKER_DEVICE_ID
+        data:
+          config_entry: DEINE_CONFIG_ENTRY_ID
+          temperature: '{{ duese_soll | int }}'
+    - conditions:
+      - condition: trigger
+        id: bett
+      - condition: template
+        value_template: '{{ (bett_soll | float(0) - states(''sensor.anycubic_kobra_s1_target_hotbed_temperature'') | float(-999)) | abs > 0.5 }}'
+      sequence:
+      - action: anycubic_ha_integration.change_print_target_hotbed_temperature
+        target:
+          device_id: DEINE_DRUCKER_DEVICE_ID
+        data:
+          config_entry: DEINE_CONFIG_ENTRY_ID
+          temperature: '{{ bett_soll | int }}'
+  mode: queued
+  max: 10
+  variables:
+    duese_soll: '{{ [[ (states(''input_number.kobra_duse_basis_zieltemperatur'') | float(0) + states(''input_number.kobra_duse_temperatur_offset'') | float(0)) | round(0), 0] | max, 320] | min }}'
+    bett_soll: '{{ [[ (states(''input_number.kobra_bett_basis_zieltemperatur'') | float(0) + states(''input_number.kobra_bett_temperatur_offset'') | float(0)) | round(0), 0] | max, 110] | min }}'

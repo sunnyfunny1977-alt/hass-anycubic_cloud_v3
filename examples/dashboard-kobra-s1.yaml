@@ -13,12 +13,11 @@
 # Voraussetzungen:
 #   - HACS-Card "button-card" (custom:button-card)
 #   - Eine camera.*-Entity fuer die Kameraflaeche
-#   - Optional: drei Template-Helfer fuer die Kameraeinblendung
-#       sensor.kobra_overlay_uhrzeit, sensor.kobra_overlay_datum,
-#       sensor.kobra_overlay_druckinfo
-#   - Optional: zwei input_number-Helfer fuer die Temperatur-Feinjustierung
-#       input_number.kobra_duse_temperatur_offset,
-#       input_number.kobra_bett_temperatur_offset
+#   - Optional: die Helfer und Automationen aus examples/helpers/
+#       template-sensoren.yaml    -> Einblendung im Kamerabild
+#       input-number-helfer.yaml  -> Temperatur-Feinjustierung
+#       automationen.yaml         -> Kameralicht-Auto-Aus, Offset uebertragen
+#     Jede Datei nennt in ihrem Kopf, an welcher Stelle sie gebraucht wird.
 #
 # Entity-IDs anpassen:
 #   Die IDs enthalten den Druckernamen, hier "anycubic_kobra_s1". Heisst dein

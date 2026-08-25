@@ -157,6 +157,20 @@ Im Originalaufbau dieses Musters haengt an der Stelle eine **SONOFF CAM-S1**, di
 
 Im YAML steht dafuer der Platzhalter `camera.drucker_kamera`. Ohne passende Kamera-Entity bleibt die Flaeche leer, der Rest des Dashboards funktioniert unabhaengig davon.
 
+### Helfer und Automationen
+
+Einige Elemente des Musters brauchen Home-Assistant-Helfer. Sie liegen fertig unter [`examples/helpers/`](examples/helpers/) und nennen im Dateikopf jeweils, wo sie gebraucht werden:
+
+| Datei | Wird gebraucht fuer | Ohne sie |
+|---|---|---|
+| [`template-sensoren.yaml`](examples/helpers/template-sensoren.yaml) | Uhrzeit, Datum und Druckinfo im Kamerabild | Kamerabild bleibt nutzbar, die Einblendung fehlt |
+| [`input-number-helfer.yaml`](examples/helpers/input-number-helfer.yaml) | die beiden Temperatur-Schieberegler | Die Regler erscheinen nicht |
+| [`automationen.yaml`](examples/helpers/automationen.yaml) | Kameralicht-Auto-Aus, Uebertragen des Temperatur-Offsets an den Drucker | Licht bleibt an; die Regler aendern nur Helferwerte |
+
+Alle drei sind **optional** — das Dashboard laeuft auch ohne sie, einzelne Elemente bleiben dann aber wirkungslos. In `automationen.yaml` sind vor dem Einfuegen zwei Platzhalter zu ersetzen: `DEINE_DRUCKER_DEVICE_ID` und `DEINE_CONFIG_ENTRY_ID`.
+
+> ⚠️ Die Automation `kobra_temperatur_offset_anwenden` ist die **einzige** Stelle im Beispielpaket, die aktiv Werte an den Drucker sendet. Alles andere ist Anzeige. Vor dem Einsatz bewusst pruefen.
+
 ### Weitere Voraussetzungen
 
 - HACS-Card **button-card** (`custom:button-card`) — ohne sie bleiben die meisten Karten leer
